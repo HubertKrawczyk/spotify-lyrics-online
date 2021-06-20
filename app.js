@@ -13,9 +13,11 @@ var cors = require('cors');
 var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
 
+port = process.env.PORT || 5000;
+
 var client_id = '77da548e63614b9e9191cd0d3391a8c8'; // Your client id
 var client_secret = 'd1b0b6de3c944ea39d1e4812b998b6e7'; // Your secret
-var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
+var redirect_uri = 'http://localhost:'+port+'/callback'; // Your redirect uri
 
 
 //
@@ -363,6 +365,6 @@ app.get('/get_lyrics', function (req, res) {
    
   
 });
-port = 8888
+
 console.log('Listening on '+port);
 app.listen(port);
