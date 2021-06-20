@@ -75,7 +75,8 @@ function geniusLyrics(urll, callbackk) {
       magiclyTakeTheLyrics(html)
     }).catch(function (err) {
       //handle error
-
+      console.log("an error occured when running the url:");
+      console.log(err);
      // console.log(err.statusCode==404)
 
 
