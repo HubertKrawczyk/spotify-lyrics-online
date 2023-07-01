@@ -10,7 +10,7 @@ export default function NavigationMenu() {
         <li>
           <a
             className="bg-slate-600 py-2 px-4 hover:bg-green-900"
-            href="/logout"
+            href="/spotify-logout"
           >
             Sign out
           </a>

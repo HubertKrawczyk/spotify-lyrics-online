@@ -3,10 +3,15 @@
 import { getPlaying } from "@/spotifyApi/methods/GetPlaying";
 import { Playing } from "@/spotifyApi/types/Playing";
 import { useEffect, useState } from "react";
+import { PlayerProps } from "./props";
+import useAuthService from "@/hooks/AuthService";
 
-export default function Player() {
+export default function Player(props: PlayerProps) {
+  const spotifyAuthService = useAuthService('spotify');
   const [player, setPlayer] = useState<Playing>();
   const [isLoading, setIsLoading] = useState(true);
+
+  
   useEffect(() => {
     fetchPlaying();
   }, []);
@@ -14,10 +19,15 @@ export default function Player() {
   const fetchPlaying = async () => {
     setIsLoading(true);
     try {
-      const playing = await getPlaying();
+      const playing = await getPlaying(spotifyAuthService.getBearer());
       setPlayer(playing);
+      props.trackChanged({
+        trackName: playing.item.name,
+        artistName: playing.item.artists[0].name
+      });
     } catch (e) {
       console.log(e);
+      props.trackChanged(undefined);
     }
     setIsLoading(false);
   };

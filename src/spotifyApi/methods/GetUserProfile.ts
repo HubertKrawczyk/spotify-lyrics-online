@@ -1,10 +1,7 @@
 import axios from "axios";
-import authSerice from "../AuthService";
 import { UserProfile } from "../types/UserProfile";
 
-export const getUserProfile = async (): Promise<UserProfile> => {
-    const bearerToken = authSerice.getBearer();
-
+export const getUserProfile = async (bearerToken: string): Promise<UserProfile> => {
     const res = await axios.get('https://api.spotify.com/v1/me', { headers: { Authorization: 'Bearer ' + bearerToken } });
     if (res.status === 200) {
         return res.data;
