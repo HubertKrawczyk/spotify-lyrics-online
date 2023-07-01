@@ -1,17 +1,16 @@
 "use client";
 
-import { getPlaying } from "@/spotifyApi/methods/GetPlaying";
-import { Playing } from "@/spotifyApi/types/Playing";
 import { useEffect, useState } from "react";
 import { PlayerProps } from "./props";
 import useAuthService from "@/hooks/AuthService";
+import { TrackDto } from "@/externalApi/spotifyApi/types/TrackDto";
+import { getPlaying } from "@/externalApi/spotifyApi/methods/GetPlaying";
 
 export default function Player(props: PlayerProps) {
-  const spotifyAuthService = useAuthService('spotify');
-  const [player, setPlayer] = useState<Playing>();
+  const spotifyAuthService = useAuthService("spotify");
+  const [track, setTrack] = useState<TrackDto>();
   const [isLoading, setIsLoading] = useState(true);
 
-  
   useEffect(() => {
     fetchPlaying();
   }, []);
@@ -20,11 +19,8 @@ export default function Player(props: PlayerProps) {
     setIsLoading(true);
     try {
       const playing = await getPlaying(spotifyAuthService.getBearer());
-      setPlayer(playing);
-      props.trackChanged({
-        trackName: playing.item.name,
-        artistName: playing.item.artists[0].name
-      });
+      setTrack(playing);
+      props.trackChanged(playing);
     } catch (e) {
       console.log(e);
       props.trackChanged(undefined);
@@ -39,30 +35,27 @@ export default function Player(props: PlayerProps) {
       ) : (
         <>
           <p className="bg-green-900">
-            {player?.is_playing ? "Playing" : "Not Playing"}
+            {track?.isPlaying ? "Playing" : "Not Playing"}
           </p>
-          {player?.item ? (
-            <div className="py-3 px-7 flex h-32 gap-16 items-center">
-              <img
-                src={player.item.album.images[0].url}
-                className="rounded-full h-20"
-              ></img>
-              <div className="flex flex-col justify-center items-start text-2xl">
+          {track ? (
+            <div className="py-3 px-7 flex h-32 gap-8 md:gap-16 items-center">
+              <img src={track.imageUrl} className="rounded-full h-20"></img>
+              <div className="flex flex-col justify-center items-start text-base md:text-2xl">
                 <h4>
                   <small>
-                    <i>{player.item.name}</i>
+                    <i>{track.trackName}</i>
                   </small>
                 </h4>
                 <h4>
                   <span className="font-semibold">Album </span>
                   <small>
-                    <i>{player.item.album.name}</i>
+                    <i>{track.albumName}</i>
                   </small>
                 </h4>
                 <h4>
-                  <span className="font-semibold">Artist</span>{" "}
+                  <span className="font-semibold">Artist </span>
                   <small>
-                    <i>{player.item.artists[0].name}</i>
+                    <i>{track.artistName}</i>
                   </small>
                 </h4>
               </div>
@@ -72,10 +65,10 @@ export default function Player(props: PlayerProps) {
           )}
 
           <button
-            className="absolute right-0 top-0 h-full w-24 bg-slate-600 hover:bg-slate-400 bg-opacity-40 flex"
+            className="absolute right-0 top-0 h-full w-16 md:w-24 bg-slate-600 hover:bg-slate-400 bg-opacity-40 flex"
             onClick={fetchPlaying}
           >
-            <p alt-text="refresh" className="text-5xl m-auto">
+            <p alt-text="refresh" className="text-3xl md:text-5xl m-auto">
               ↻
             </p>
           </button>

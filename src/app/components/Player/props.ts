@@ -1,5 +1,5 @@
-import { LyricsProps } from "../Lyrics/model";
+import { TrackDto } from "@/externalApi/spotifyApi/types/TrackDto";
 
 export type PlayerProps = {
-    trackChanged: (track: LyricsProps | undefined) => void;
+    trackChanged: (track: TrackDto | undefined) => void;
 }

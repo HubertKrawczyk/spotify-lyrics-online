@@ -1,5 +1,6 @@
 export default function NavigationMenu() {
   return (
+    <div className='bg-black bg-opacity-90'>
     <nav className="py-4">
       <ul className="flex flex-row gap-2">
         <li>
@@ -17,5 +18,6 @@ export default function NavigationMenu() {
         </li>
       </ul>
     </nav>
+    </div>
   );
 }

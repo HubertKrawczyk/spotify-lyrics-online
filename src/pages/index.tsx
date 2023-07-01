@@ -1,11 +1,11 @@
 "use client";
 
 import Lyrics from "@/app/components/Lyrics";
-import { LyricsProps } from "@/app/components/Lyrics/model";
 import Player from "@/app/components/Player";
+import { getUserProfile } from "@/externalApi/spotifyApi/methods/GetUserProfile";
+import { TrackDto } from "@/externalApi/spotifyApi/types/TrackDto";
+import { UserProfile } from "@/externalApi/spotifyApi/types/UserProfile";
 import useAuthService from "@/hooks/AuthService";
-import { getUserProfile } from "@/spotifyApi/methods/GetUserProfile";
-import { UserProfile } from "@/spotifyApi/types/UserProfile";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -27,7 +27,7 @@ export default function Home() {
   
   const [userProfile, setUserProfile] = useState<UserProfile>();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [currentTrack, setCurrentTrack] = useState<LyricsProps | undefined>(
+  const [currentTrack, setCurrentTrack] = useState<TrackDto | undefined>(
     undefined
   );
 

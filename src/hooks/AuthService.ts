@@ -45,11 +45,13 @@ const refreshToken = () => {
 
 const isLoggedIn = () =>{ 
     if(!localStorage.getItem(bearerKey)) return false;
+
     const expiresAt = getExpiresAt();
-    if(!expiresAt) return false;
-    
+    if(expiresAt) {
     // minute from now
-    return Date.now() + 60000 < (new Date(expiresAt).getTime());
+        return Date.now() + 60000 < (new Date(expiresAt).getTime());
+    }
+    return true
 };
 
   return {
