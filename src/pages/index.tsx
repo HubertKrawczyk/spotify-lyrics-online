@@ -20,7 +20,7 @@ function getHashParams() {
   }
   return hashParams;
 }
-const x = process.env;
+
 export default function Home() {
   const router = useRouter();
   const spotifyAuthService = useAuthService('spotify');
@@ -64,7 +64,6 @@ export default function Home() {
   };
 
   useEffect(() => {
-    console.log('env', x, JSON.stringify(x))
     var params = getHashParams();
     if (params) processHashParams(params);
 
