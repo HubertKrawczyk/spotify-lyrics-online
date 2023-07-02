@@ -1,4 +1,4 @@
-![image](https://github.com/HubertKrawczyk/spotify-lyrics-online/assets/43684354/a46221f6-4ab9-420a-8a7e-82e83607fb50)
+![image](./assets/screenshot.png)
 
 Available at: https://spotify-lyrics-online.vercel.app/
 
