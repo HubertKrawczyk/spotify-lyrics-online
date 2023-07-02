@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { client } from "./client";
 import queryString from "query-string";
 import { spotifyStateKey } from "./login";
+import { app_url } from "@/pages/_app";
 
 export default async function handler(
   req: NextApiRequest,
@@ -29,7 +30,7 @@ export default async function handler(
 
   const authorizationOptions = {
     code: code as string,
-    redirect_uri: "http://localhost:3000/api/spotify/callback",
+    redirect_uri: app_url + "/api/spotify/callback",
   };
 
   const token = (

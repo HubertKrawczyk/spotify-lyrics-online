@@ -6,6 +6,7 @@ import { getUserProfile } from "@/externalApi/spotifyApi/methods/GetUserProfile"
 import { TrackDto } from "@/externalApi/spotifyApi/types/TrackDto";
 import { UserProfile } from "@/externalApi/spotifyApi/types/UserProfile";
 import useAuthService from "@/hooks/AuthService";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -86,11 +87,11 @@ export default function Home() {
         )}
 
         {!isLoggedIn && (
-          <a href="/api/spotify/login">
-            <div className="bg-slate-500 mt-20 mx-auto p-4 w-64">
+          <Link href="/api/spotify/login">
+            <div className="bg-slate-500 mt-20 mx-auto p-4 w-64 mb-4">
               Login to spotify
             </div>
-          </a>
+          </Link>
         )}
       </div>
     </main>

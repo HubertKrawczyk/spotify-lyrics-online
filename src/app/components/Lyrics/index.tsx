@@ -3,6 +3,7 @@ import { LyricsProps } from "./model";
 import { createRef, useEffect, useRef, useState } from "react";
 import { geniusSearch } from "@/externalApi/geniusApi/methods/Search";
 import axios, { AxiosError } from "axios";
+import Link from "next/link";
 
 export default function Lyrics(track: LyricsProps) {
   const geniusAuthService = useAuthService("genius");
@@ -63,11 +64,11 @@ export default function Lyrics(track: LyricsProps) {
   return (
     <div>
       {!isLoggedIn && (
-        <a href="/api/genius/login">
+        <Link href="/api/genius/login">
           <div className="bg-slate-500 mt-20 mx-auto p-4 w-64">
             Login to genius to see lyrics
           </div>
-        </a>
+        </Link>
       )}
       <div className="flex justify-center p-4">
         <p className="whitespace-pre-line bg-black w-fit px-24">{text}</p>

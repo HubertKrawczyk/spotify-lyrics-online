@@ -1,20 +1,22 @@
+import Link from "next/link";
+
 export default function NavigationMenu() {
   return (
     <div className='bg-black bg-opacity-90'>
     <nav className="py-4">
       <ul className="flex flex-row gap-2">
         <li>
-          <a className="bg-slate-600 py-2 px-4 hover:bg-green-900" href="/">
+          <Link className="bg-slate-600 py-2 px-4 hover:bg-green-900" href="/">
             Home
-          </a>
+          </Link>
         </li>
         <li>
-          <a
+          <Link
             className="bg-slate-600 py-2 px-4 hover:bg-green-900"
-            href="/spotify-logout"
+            href="/logout"
           >
             Sign out
-          </a>
+          </Link>
         </li>
       </ul>
     </nav>

@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { client } from "./client";
+import { app_url } from "@/pages/_app";
 var generateRandomString = function(length: number) {
   var text = '';
   var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -11,7 +12,7 @@ var generateRandomString = function(length: number) {
 };
 
 const params = {
-  redirect_uri: "http://localhost:3000/api/spotify/callback",
+  redirect_uri: app_url + "/api/spotify/callback",
   scope:
     "user-modify-playback-state user-read-currently-playing user-read-private",
   show_dialog: true,
