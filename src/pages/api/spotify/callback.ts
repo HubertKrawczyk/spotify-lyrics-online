@@ -33,9 +33,7 @@ export default async function handler(
     redirect_uri: app_url + "/api/spotify/callback",
   };
 
-  const token = (
-    await client.getToken(authorizationOptions)
-  ).token;
+  const token = (await client.getToken(authorizationOptions)).token;
 
   res.redirect(
     "/#" +

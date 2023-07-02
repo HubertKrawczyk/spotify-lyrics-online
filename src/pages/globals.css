@@ -6,6 +6,7 @@
 html, body, #__next {
   height: 100%;
 }
+
 #__next {
   display: flex;
   flex-direction: column;
@@ -24,4 +25,5 @@ main, nav {
 }
 body {
   color: white;
+  background-color: black;
 }

@@ -6,8 +6,8 @@ import { getUserProfile } from "@/externalApi/spotifyApi/methods/GetUserProfile"
 import { TrackDto } from "@/externalApi/spotifyApi/types/TrackDto";
 import { UserProfile } from "@/externalApi/spotifyApi/types/UserProfile";
 import useAuthService from "@/hooks/AuthService";
+import { AxiosError } from "axios";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 function getHashParams() {
@@ -22,7 +22,6 @@ function getHashParams() {
 }
 
 export default function Home() {
-  const router = useRouter();
   const spotifyAuthService = useAuthService('spotify');
   const geniusAuthService = useAuthService('genius');
   
@@ -57,13 +56,19 @@ export default function Home() {
       setUserProfile(profile);
     } catch (e: any) {
       console.log(e);
-      if (e.response?.status === 401) {
-        router.replace("/api/spotify/login");
+      const err = e as AxiosError;
+      if (err.response?.status === 401) {
+        spotifyAuthService.clear();
+        setIsLoggedIn(false);
       }
     }
   };
 
   useEffect(() => {
+    // the most important feature:
+    const randomBgNo = (new Array(5).fill(1)).concat(new Array(4).fill(2)).concat(new Array(3).fill(3)).concat(new Array(2).fill(4))[Math.floor(Math.random()*14)]
+    document.body.style.backgroundImage = "url(/bg" + (1 + Math.floor(Math.random() * randomBgNo)) + ".png)";
+
     var params = getHashParams();
     if (params) processHashParams(params);
 

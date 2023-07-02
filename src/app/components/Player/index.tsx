@@ -31,7 +31,10 @@ export default function Player(props: PlayerProps) {
   return (
     <div className="w-full bg-green-700 relative">
       {isLoading ? (
-        <p className="bg-green-900">Loading</p>
+        <>
+          <p className="bg-green-900">Loading</p>
+          <div className="py-3 px-7 flex h-32 gap-8 md:gap-16 items-center" />
+        </>
       ) : (
         <>
           <p className="bg-green-900">

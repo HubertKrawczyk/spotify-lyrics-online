@@ -4,12 +4,17 @@ import { createRef, useEffect, useRef, useState } from "react";
 import { geniusSearch } from "@/externalApi/geniusApi/methods/Search";
 import axios, { AxiosError } from "axios";
 import Link from "next/link";
+import style from "./style.module.css";
+import { geniusGetLyricsForTrack } from "./LyricsExtractMethods";
 
 export default function Lyrics(track: LyricsProps) {
   const geniusAuthService = useAuthService("genius");
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [firstLoaded, setFirstLoaded] = useState(false);
 
-  const [text, setText] = useState<string>("");
+  const [text, setText] = useState<string | undefined>(undefined);
+  const [oldText, setOldText] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     const isLoggedIn = geniusAuthService.isLoggedIn();
@@ -20,26 +25,23 @@ export default function Lyrics(track: LyricsProps) {
   }, [track]);
 
   const fetchSong = async () => {
+    setIsLoading(true);
+    setText(undefined);
     try {
-      const search = await geniusSearch(geniusAuthService.getBearer(), track);
-      const geniusSongId = search.response.hits.find((h) => h.type == "song")
-        ?.result.id;
-      const a = `//genius.com/songs/${geniusSongId}/embed.js`;
+      const lyricsText = await geniusGetLyricsForTrack(geniusAuthService.getBearer(), track);
 
-      axios.get(a).then((res) => {
-        const s = res.data as string;
-        const reg = new RegExp(/<div.*<iframe/gm);
-        let part = reg.exec(s)![0];
-        part = part.substring(0, part.length - 13);
+      setText(lyricsText);
+      if (!firstLoaded) {
+        setOldText(lyricsText);
+        setTimeout(() => {
+          setFirstLoaded(true);
+        }, 1000);
+      } else {
+        setTimeout(() => {
+          setOldText(lyricsText);
+        }, 1000);
+      }
 
-        part = part.replaceAll("\\\\\\", "\\");
-        part = part.replaceAll("\\\\", "\\");
-
-        part = removeHtmlTags2(part);
-        part = part.replaceAll("\\n", "\n").replaceAll("\\", "");
-        part = part.replace(/(\n)*Powered by Genius(\n)*/gm, "");
-        setText(part);
-      });
     } catch (e) {
       const error = e as AxiosError;
       if (error.status == 401) {
@@ -47,22 +49,11 @@ export default function Lyrics(track: LyricsProps) {
         setIsLoggedIn(false);
       }
     }
-  };
-
-  const removeHtmlTags = (input: string) => {
-    const d = document.createElement("div");
-    d.innerHTML = input;
-    const result = d.innerText;
-    d.remove();
-    return result;
-  };
-
-  const removeHtmlTags2 = (input: string) => {
-    return input.replace(/<\/?[^>]+(>|$)/g, "");
+    setIsLoading(false);
   };
 
   return (
-    <div>
+    <div className="overflow-x-hidden relative">
       {!isLoggedIn && (
         <Link href="/api/genius/login">
           <div className="bg-slate-500 mt-20 mx-auto p-4 w-64">
@@ -70,9 +61,31 @@ export default function Lyrics(track: LyricsProps) {
           </div>
         </Link>
       )}
-      <div className="flex justify-center p-4">
-        <p className="whitespace-pre-line bg-black w-fit px-24">{text}</p>
-      </div>
+      {(!!text || !!oldText) && (
+        <div className={`flex justify-center px-4 overflow-hidden relative text-base md:text-lg lg:text-xl ${style.textContainer}`}>
+          <p
+            className="whitespace-pre-line bg-black w-fit px-24"
+            style={{ visibility: firstLoaded ? "visible" : "hidden" }}
+          >
+            {oldText}
+          </p>
+          {!!text && (
+            <>
+              <p className="whitespace-pre-line bg-black w-fit px-24">{text}</p>
+              <p className="whitespace-pre-line bg-black w-fit px-24">{text}</p>
+              <p className="whitespace-pre-line bg-black w-fit px-24">{text}</p>
+              <p className="whitespace-pre-line bg-black w-fit px-24">{text}</p>
+              <p className="whitespace-pre-line bg-black w-fit px-24">{text}</p>
+            </>
+          )}
+        </div>
+      )}
+      {isLoading && (
+        <div
+          className={`absolute top-0 h-3 left-0s w-full ${style.loadingBg}`}
+        />
+      )}
     </div>
   );
 }
+
