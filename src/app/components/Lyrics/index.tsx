@@ -35,10 +35,12 @@ export default function Lyrics(track: LyricsProps) {
         setOldText(lyricsText);
         setTimeout(() => {
           setFirstLoaded(true);
+          setText(undefined);
         }, 1000);
       } else {
         setTimeout(() => {
           setOldText(lyricsText);
+          setText(undefined);
         }, 1000);
       }
 
