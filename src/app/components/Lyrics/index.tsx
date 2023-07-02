@@ -64,20 +64,20 @@ export default function Lyrics(track: LyricsProps) {
         </Link>
       )}
       {(!!text || !!oldText) && (
-        <div className={`flex justify-center px-4 overflow-hidden relative text-base md:text-lg lg:text-xl ${style.textContainer}`}>
+        <div className={`flex justify-center overflow-hidden relative text-base md:text-lg lg:text-xl ${style.textContainer}`}>
           <p
-            className="whitespace-pre-line bg-black w-fit px-24"
+            className="whitespace-pre-line bg-black w-full md:w-fit px-5 md:px-8 xl:px-24"
             style={{ visibility: firstLoaded ? "visible" : "hidden" }}
           >
             {oldText}
           </p>
           {!!text && (
             <>
-              <p className="whitespace-pre-line bg-black w-fit px-24">{text}</p>
-              <p className="whitespace-pre-line bg-black w-fit px-24">{text}</p>
-              <p className="whitespace-pre-line bg-black w-fit px-24">{text}</p>
-              <p className="whitespace-pre-line bg-black w-fit px-24">{text}</p>
-              <p className="whitespace-pre-line bg-black w-fit px-24">{text}</p>
+              <p className="whitespace-pre-line bg-black w-full md:w-fit px-5 md:px-8 xl:px-24">{text}</p>
+              <p className="whitespace-pre-line bg-black w-full md:w-fit px-5 md:px-8 xl:px-24">{text}</p>
+              <p className="whitespace-pre-line bg-black w-full md:w-fit px-5 md:px-8 xl:px-24">{text}</p>
+              <p className="whitespace-pre-line bg-black w-full md:w-fit px-5 md:px-8 xl:px-24">{text}</p>
+              <p className="whitespace-pre-line bg-black w-full md:w-fit px-5 md:px-8 xl:px-24">{text}</p>
             </>
           )}
         </div>

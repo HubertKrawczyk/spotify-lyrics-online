@@ -4,7 +4,7 @@ export default function NavigationMenu() {
   return (
     <div className="bg-black bg-opacity-90">
       <nav className="py-4">
-        <ul className="flex flex-row gap-2">
+        <ul className="flex flex-row gap-2 px-2 2xl:px-0">
           <li>
             <Link
               className="bg-slate-600 py-2 px-4 hover:bg-green-900"
