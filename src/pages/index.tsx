@@ -64,6 +64,7 @@ export default function Home() {
   };
 
   useEffect(() => {
+    console.log('env', process.env)
     var params = getHashParams();
     if (params) processHashParams(params);
 
