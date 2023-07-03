@@ -3,6 +3,7 @@
 import Lyrics from "@/app/components/Lyrics";
 import Player from "@/app/components/Player";
 import { getUserProfile } from "@/externalApi/spotifyApi/methods/GetUserProfile";
+import spotifyApi from "@/externalApi/spotifyApi/spotifyApi";
 import { TrackDto } from "@/externalApi/spotifyApi/types/TrackDto";
 import { UserProfile } from "@/externalApi/spotifyApi/types/UserProfile";
 import useAuthService from "@/hooks/AuthService";
@@ -32,16 +33,16 @@ export default function Home() {
   );
 
   const processHashParams = (params: { [name: string]: string }) => {
-    console.log(params)
     if (params.spotify_error) {
       spotifyAuthService.clear();
     } else if (params.spotify_access_token) {
       spotifyAuthService.setBearer(params.spotify_access_token);
+      
       if (params.spotify_refresh_token) {
         spotifyAuthService.setRefresh(params.spotify_refresh_token);
       }
       if (params.spotify_token_expires_at) {
-        spotifyAuthService.setExpiresAt(params.spotify_token_expires_at);
+        spotifyAuthService.setExpiresAt(Number(params.spotify_token_expires_at));
       }
     }
 
@@ -52,17 +53,26 @@ export default function Home() {
 
   const setProfile = async () => {
     try {
-      const profile = await getUserProfile(spotifyAuthService.getBearer());
+      const profile = await getUserProfile(spotifyAuthService.getBearer()!);
       setUserProfile(profile);
     } catch (e: any) {
-      console.log(e);
       const err = e as AxiosError;
+      console.log(err.message);
       if (err.response?.status === 401) {
         spotifyAuthService.clear();
         setIsLoggedIn(false);
       }
     }
   };
+
+  const refreshSpotifyToken = async () => {
+    const {accessToken, expiresIn} = await spotifyApi.refreshToken(spotifyAuthService.getRefresh()!);
+    console.log('refreshed', accessToken, expiresIn)
+    spotifyAuthService.setBearer(accessToken);
+    spotifyAuthService.setExpiresAt(Date.now() + (1000 * expiresIn));
+    setIsLoggedIn(true);
+    return true;
+  }
 
   useEffect(() => {
     // the most important feature:
@@ -73,12 +83,18 @@ export default function Home() {
     if (params) processHashParams(params);
 
     const isLoggedIn = spotifyAuthService.isLoggedIn();
+    
+    if(!isLoggedIn && spotifyAuthService.canRefreshToken() && spotifyAuthService.isTokenExpired()){
+      refreshSpotifyToken();
+    }
     setIsLoggedIn(isLoggedIn);
+  }, []);
 
+  useEffect(() => {
     if (isLoggedIn) {
       setProfile();
     }
-  }, []);
+  }, [isLoggedIn]);
 
   return (
     <main className="flex flex-col items-center justify-between">
@@ -86,7 +102,7 @@ export default function Home() {
         {isLoggedIn && (
           <>
             <p className="py-1">Logged in as {userProfile?.display_name}</p>
-            <Player trackChanged={setCurrentTrack} />
+            <Player onTrackChanged={setCurrentTrack} onTokenExpired={() => {return refreshSpotifyToken()}}/>
             {currentTrack && <Lyrics {...currentTrack} />}
           </>
         )}

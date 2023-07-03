@@ -1,7 +1,7 @@
 import useAuthService from "@/hooks/AuthService";
 import { LyricsProps } from "./model";
 import { createRef, useEffect, useRef, useState } from "react";
-import { geniusSearch } from "@/externalApi/geniusApi/methods/Search";
+import { search } from "@/externalApi/geniusApi/methods/Search";
 import axios, { AxiosError } from "axios";
 import Link from "next/link";
 import style from "./style.module.css";
@@ -28,7 +28,7 @@ export default function Lyrics(track: LyricsProps) {
     setIsLoading(true);
     setText(undefined);
     try {
-      const lyricsText = await geniusGetLyricsForTrack(geniusAuthService.getBearer(), track);
+      const lyricsText = await geniusGetLyricsForTrack(geniusAuthService.getBearer()!, track);
 
       setText(lyricsText);
       if (!firstLoaded) {

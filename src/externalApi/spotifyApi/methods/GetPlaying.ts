@@ -7,7 +7,6 @@ export const getPlaying = async (bearerToken: string): Promise<TrackDto> => {
     const res = await axios.get('https://api.spotify.com/v1/me/player/currently-playing', { headers: { Authorization: 'Bearer ' + bearerToken } });
     
     if (res.status === 200) {
-        console.log('fetched: ', res.data)
         const track = res.data as Playing;
         return {
             artistName: track.item.artists[0].name,
@@ -19,7 +18,6 @@ export const getPlaying = async (bearerToken: string): Promise<TrackDto> => {
         }
         
     } else {
-        console.log(res.statusText)
         throw new Error(res.statusText)
     }}
     catch(e){

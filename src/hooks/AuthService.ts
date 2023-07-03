@@ -12,10 +12,8 @@ export default function useAuthService(provider: Provider) {
     localStorage.removeItem(refreshKey);
   };
 
-  const getBearer = (): string => {
-    const token = localStorage.getItem(bearerKey);
-    if (!token) throw new Error("no bearer token stored");
-    return token;
+  const getBearer = () => {
+    return localStorage.getItem(bearerKey);
   };
 
   const setBearer = (bearerToken: string) => {
@@ -31,25 +29,33 @@ export default function useAuthService(provider: Provider) {
   };
 
   const getExpiresAt = () => {
-    return localStorage.getItem(expiresAtKey);
+    const expiresAt = localStorage.getItem(expiresAtKey);
+    return expiresAt ? Number(expiresAt) : null;
   };
 
-  const setExpiresAt = (expiresAt: string) => {
-    localStorage.setItem(expiresAtKey, expiresAt);
+  /** @param expiresAtTimestamp - timestamp in milliseconds */
+  const setExpiresAt = (expiresAtTimestamp: number) => {
+    localStorage.setItem(expiresAtKey, String(expiresAtTimestamp));
   };
 
-  const refreshToken = () => {
-    getRefresh();
-    return;
-  };
+  const canRefreshToken = () => {
+    return !!getRefresh();
+  }
+
+  const isTokenExpired = (expiresAtOptional?: number ) => {
+    const expiresAt = expiresAtOptional ?? Number(getExpiresAt());
+    if (isNaN(expiresAt)) return false; // there is not token so technically it cannot be expired
+
+    // minute from now
+    return  Date.now() + 60000 < expiresAt;
+  }
 
   const isLoggedIn = () => {
     if (!localStorage.getItem(bearerKey)) return false;
-
     const expiresAt = getExpiresAt();
     if (expiresAt) {
       // minute from now
-      return Date.now() + 60000 < new Date(expiresAt).getTime();
+      return isTokenExpired(Number(expiresAt));
     }
     return true;
   };
@@ -58,9 +64,12 @@ export default function useAuthService(provider: Provider) {
     getBearer,
     setBearer,
     setRefresh,
+    getRefresh,
     getExpiresAt,
     setExpiresAt,
     clear,
     isLoggedIn,
+    isTokenExpired,
+    canRefreshToken,
   };
 }

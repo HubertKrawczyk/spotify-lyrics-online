@@ -2,7 +2,7 @@ import axios from "axios";
 import { Search } from "../types/Search";
 import { TrackDto } from "@/externalApi/spotifyApi/types/TrackDto";
 
-export const geniusSearch = async (
+export const search = async (
   bearerToken: string,
   track: {
     artistName: string;
@@ -21,7 +21,6 @@ export const geniusSearch = async (
       const search = res.data as Search;
       return search;
     } else {
-      console.log(res.statusText);
       throw new Error(res.statusText);
     }
   } catch (e) {

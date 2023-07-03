@@ -4,6 +4,13 @@ import queryString from "query-string";
 import { spotifyStateKey } from "./login";
 import { app_url } from "@/pages/_app";
 
+type TokenType = {
+  access_token: string;
+  refresh_token: string;
+  expires_at: string;
+  expires_in: number; 
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -33,14 +40,14 @@ export default async function handler(
     redirect_uri: app_url + "/api/spotify/callback",
   };
 
-  const token = (await client.getToken(authorizationOptions)).token;
+  const token = (await client.getToken(authorizationOptions)).token as TokenType;
 
   res.redirect(
     "/#" +
       queryString.stringify({
         spotify_access_token: token.access_token,
         spotify_refresh_token: token.refresh_token,
-        spotify_token_expires_at: token.expires_at,
+        spotify_token_expires_at: new Date(token.expires_at).getTime(),
       })
   );
 }

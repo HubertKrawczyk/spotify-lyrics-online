@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { PlayerProps } from "./props";
 import useAuthService from "@/hooks/AuthService";
 import { TrackDto } from "@/externalApi/spotifyApi/types/TrackDto";
-import { getPlaying } from "@/externalApi/spotifyApi/methods/GetPlaying";
+import spotifyApi from "@/externalApi/spotifyApi/spotifyApi";
+import { AxiosError } from "axios";
 
 export default function Player(props: PlayerProps) {
   const spotifyAuthService = useAuthService("spotify");
@@ -12,19 +13,36 @@ export default function Player(props: PlayerProps) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetchPlaying();
+    fetchPlaying(true);
   }, []);
 
-  const fetchPlaying = async () => {
+  const getPlaying = async () => {
+    return await spotifyApi.getPlaying(spotifyAuthService.getBearer()!);
+  };
+
+  const fetchPlaying = async (refreshOnFail: boolean) => {
     setIsLoading(true);
+    let playing: TrackDto | undefined = undefined;
     try {
-      const playing = await getPlaying(spotifyAuthService.getBearer());
-      setTrack(playing);
-      props.trackChanged(playing);
+      playing = await getPlaying();
     } catch (e) {
-      console.log(e);
-      props.trackChanged(undefined);
+      const err = e as AxiosError;
+      if (
+        err.response?.status === 401 &&
+        refreshOnFail &&
+        spotifyAuthService.isTokenExpired()
+      ) {
+        //TODO: do the token refreshing inside http client to avoid garbage like this
+        if (await props.onTokenExpired()) await fetchPlaying(false);
+        else console.log("Getting playing song failed");
+        return;
+      } else {
+        console.log("Getting playing song failed");
+      }
     }
+
+    setTrack(playing);
+    props.onTrackChanged(playing);
     setIsLoading(false);
   };
 
@@ -69,7 +87,9 @@ export default function Player(props: PlayerProps) {
 
           <button
             className="absolute right-0 top-0 h-full w-16 md:w-24 bg-slate-600 hover:bg-slate-400 bg-opacity-40 flex"
-            onClick={fetchPlaying}
+            onClick={() => {
+              fetchPlaying(true);
+            }}
           >
             <p alt-text="refresh" className="text-3xl md:text-5xl m-auto">
               ↻
