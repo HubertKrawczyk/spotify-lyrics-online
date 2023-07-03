@@ -16,7 +16,7 @@ const params = {
   redirect_uri: app_url + "/api/spotify/callback",
   scope:
     "user-modify-playback-state user-read-currently-playing user-read-private",
-  show_dialog: true,
+  show_dialog: false,
   response_type: "code",
 };
 

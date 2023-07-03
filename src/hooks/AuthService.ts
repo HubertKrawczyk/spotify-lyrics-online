@@ -1,5 +1,3 @@
-import { useState, useEffect } from "react";
-
 type Provider = "spotify" | "genius";
 
 export default function useAuthService(provider: Provider) {
@@ -40,15 +38,15 @@ export default function useAuthService(provider: Provider) {
 
   const canRefreshToken = () => {
     return !!getRefresh();
-  }
+  };
 
-  const isTokenExpired = (expiresAtOptional?: number ) => {
+  const isTokenExpired = (expiresAtOptional?: number) => {
     const expiresAt = expiresAtOptional ?? Number(getExpiresAt());
     if (isNaN(expiresAt)) return false; // there is not token so technically it cannot be expired
 
     // minute from now
-    return  Date.now() + 60000 < expiresAt;
-  }
+    return Date.now() + 60000 < expiresAt;
+  };
 
   const isLoggedIn = () => {
     if (!localStorage.getItem(bearerKey)) return false;

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 /** @output access token and expiresIn in seconds */
-export const refreshToken = async (
+export const refreshSpotifyToken = async (
   refreshToken: string
 ): Promise<{ accessToken: string; expiresIn: number }> => {
   try {

@@ -2,10 +2,9 @@
 
 import Lyrics from "@/app/components/Lyrics";
 import Player from "@/app/components/Player";
-import { getUserProfile } from "@/externalApi/spotifyApi/methods/GetUserProfile";
-import spotifyApi from "@/externalApi/spotifyApi/spotifyApi";
-import { TrackDto } from "@/externalApi/spotifyApi/types/TrackDto";
-import { UserProfile } from "@/externalApi/spotifyApi/types/UserProfile";
+import { getUserProfile } from "@/api_external/spotify/methods/GetUserProfile";
+import { TrackDto } from "@/api_external/spotify/types/TrackDto";
+import { UserProfile } from "@/api_external/spotify/types/UserProfile";
 import useAuthService from "@/hooks/AuthService";
 import { AxiosError } from "axios";
 import Link from "next/link";
@@ -53,7 +52,7 @@ export default function Home() {
 
   const setProfile = async () => {
     try {
-      const profile = await getUserProfile(spotifyAuthService.getBearer()!);
+      const profile = await getUserProfile();
       setUserProfile(profile);
     } catch (e: any) {
       const err = e as AxiosError;
@@ -65,15 +64,6 @@ export default function Home() {
     }
   };
 
-  const refreshSpotifyToken = async () => {
-    const {accessToken, expiresIn} = await spotifyApi.refreshToken(spotifyAuthService.getRefresh()!);
-    console.log('refreshed', accessToken, expiresIn)
-    spotifyAuthService.setBearer(accessToken);
-    spotifyAuthService.setExpiresAt(Date.now() + (1000 * expiresIn));
-    setIsLoggedIn(true);
-    return true;
-  }
-
   useEffect(() => {
     // the most important feature:
     const randomBgNo = (new Array(5).fill(1)).concat(new Array(4).fill(2)).concat(new Array(3).fill(3)).concat(new Array(2).fill(4))[Math.floor(Math.random()*14)]
@@ -84,9 +74,6 @@ export default function Home() {
 
     const isLoggedIn = spotifyAuthService.isLoggedIn();
     
-    if(!isLoggedIn && spotifyAuthService.canRefreshToken() && spotifyAuthService.isTokenExpired()){
-      refreshSpotifyToken();
-    }
     setIsLoggedIn(isLoggedIn);
   }, []);
 
@@ -102,7 +89,7 @@ export default function Home() {
         {isLoggedIn && (
           <>
             <p className="py-1">Logged in as {userProfile?.display_name}</p>
-            <Player onTrackChanged={setCurrentTrack} onTokenExpired={() => {return refreshSpotifyToken()}}/>
+            <Player onTrackChanged={setCurrentTrack} />
             {currentTrack && <Lyrics {...currentTrack} />}
           </>
         )}

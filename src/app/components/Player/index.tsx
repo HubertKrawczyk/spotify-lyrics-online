@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { PlayerProps } from "./props";
 import useAuthService from "@/hooks/AuthService";
-import { TrackDto } from "@/externalApi/spotifyApi/types/TrackDto";
-import spotifyApi from "@/externalApi/spotifyApi/spotifyApi";
+import { TrackDto } from "@/api_external/spotify/types/TrackDto";
+import spotifyApi from "@/api_external/spotify/api";
 import { AxiosError } from "axios";
 
 export default function Player(props: PlayerProps) {
@@ -17,7 +17,7 @@ export default function Player(props: PlayerProps) {
   }, []);
 
   const getPlaying = async () => {
-    return await spotifyApi.getPlaying(spotifyAuthService.getBearer()!);
+    return await spotifyApi.getPlaying();
   };
 
   const fetchPlaying = async (refreshOnFail: boolean) => {
@@ -26,19 +26,7 @@ export default function Player(props: PlayerProps) {
     try {
       playing = await getPlaying();
     } catch (e) {
-      const err = e as AxiosError;
-      if (
-        err.response?.status === 401 &&
-        refreshOnFail &&
-        spotifyAuthService.isTokenExpired()
-      ) {
-        //TODO: do the token refreshing inside http client to avoid garbage like this
-        if (await props.onTokenExpired()) await fetchPlaying(false);
-        else console.log("Getting playing song failed");
-        return;
-      } else {
-        console.log("Getting playing song failed");
-      }
+      console.log(e);
     }
 
     setTrack(playing);

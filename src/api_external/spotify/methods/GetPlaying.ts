@@ -1,10 +1,10 @@
-import axios from "axios";
 import { Playing } from "../types/Playing";
 import { TrackDto } from "../types/TrackDto";
+import spotifyInterceptorInstance from "../spotifyAxiosInterceptor";
 
-export const getPlaying = async (bearerToken: string): Promise<TrackDto> => {
+export const getPlaying = async (): Promise<TrackDto> => {
     try{
-    const res = await axios.get('https://api.spotify.com/v1/me/player/currently-playing', { headers: { Authorization: 'Bearer ' + bearerToken } });
+    const res = await spotifyInterceptorInstance.get('/me/player/currently-playing');
     
     if (res.status === 200) {
         const track = res.data as Playing;
@@ -21,7 +21,6 @@ export const getPlaying = async (bearerToken: string): Promise<TrackDto> => {
         throw new Error(res.statusText)
     }}
     catch(e){
-
         throw e;
     }
 

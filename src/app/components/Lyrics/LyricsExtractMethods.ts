@@ -1,17 +1,13 @@
-import { search } from "@/externalApi/geniusApi/methods/Search";
 import { LyricsProps } from "./model";
 import axios from "axios";
-import geniusApi from "@/externalApi/geniusApi/geniusApi";
+import geniusApi from "@/api_external/genius/api";
 
 const prepareTrackName = (trackName: string) => {
   return trackName.replaceAll("- edit", "");
 };
 
-export async function geniusGetLyricsForTrack(
-  bearerToken: string,
-  track: LyricsProps
-) {
-  const search = await geniusApi.search(bearerToken, {
+export async function geniusGetLyricsForTrack(track: LyricsProps) {
+  const search = await geniusApi.search({
     ...track,
     trackName: prepareTrackName(track.trackName),
   });
