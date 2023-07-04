@@ -4,7 +4,7 @@ Available at: https://spotify-lyrics-online.vercel.app/
 
 A website that displays currently playing Spotify song and lyrics.
 
-The lyrics come from Genius.com and this app requires logging in to Genius (no web scrapping this time)
+The lyrics come from Genius.com and this app requires logging in to Genius (no web scrapping this time) (<u>Genius tokens never expire</u> so log in only once :) )
 
 
 
