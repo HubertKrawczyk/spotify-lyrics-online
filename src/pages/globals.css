@@ -14,12 +14,12 @@ html, body, #__next {
 }
 
 main{
-  background-color: rgba(0,0,0, 0.7);
+  background-color: rgba(0,0,0, 0.6);
 
 }
 main, nav {
   width: 100%;
-  max-width: 1600px;
+  max-width: 1536px;
   margin-left: auto;
   margin-right: auto;
 }

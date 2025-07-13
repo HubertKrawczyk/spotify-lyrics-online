@@ -4,6 +4,9 @@ import { LyricsProps } from "../Lyrics/model";
 import { getDeeplTranslations } from "@/api_internal/DeeplTranslate";
 import { getAzureTranslations } from "@/api_external/azure/AzureTranslator";
 
+export const TOKEN_DEEPL = "Token-deepl";
+export const TOKEN_AZURE = "Token-azure";
+export const REGION_AZURE = "Region-azure";
 type TranslateMenuParams = {
   track: LyricsProps;
   currentText: string | undefined;
@@ -40,14 +43,14 @@ export default function TranslateMenu({
   }, [track]);
 
   useEffect(() => {
-    if (localStorage.getItem("Token-deepl") != null) {
-      setDeeplToken(localStorage.getItem("Token-deepl")!);
+    if (localStorage.getItem(TOKEN_DEEPL) != null) {
+      setDeeplToken(localStorage.getItem(TOKEN_DEEPL)!);
     }
-    if (localStorage.getItem("Token-azure") != null) {
-      setAzureToken(localStorage.getItem("Token-azure")!);
+    if (localStorage.getItem(TOKEN_AZURE) != null) {
+      setAzureToken(localStorage.getItem(TOKEN_AZURE)!);
     }
-    if (localStorage.getItem("Region-azure") != null) {
-      setAzureRegion(localStorage.getItem("Region-azure")!);
+    if (localStorage.getItem(REGION_AZURE) != null) {
+      setAzureRegion(localStorage.getItem(REGION_AZURE)!);
     }
   }, []);
 
@@ -56,14 +59,19 @@ export default function TranslateMenu({
 
     if (
       provider === "deepl" &&
-      localStorage.getItem("Token-deepl") !== deeplToken
+      localStorage.getItem(TOKEN_DEEPL) !== deeplToken
     )
-      localStorage.setItem("Token-deepl", deeplToken);
+      localStorage.setItem(TOKEN_DEEPL, deeplToken);
     if (
       provider === "azure" &&
-      localStorage.getItem("Token-azure") !== azureToken
+      localStorage.getItem(TOKEN_AZURE) !== azureToken
     )
-      localStorage.setItem("Token-azure", azureToken);
+      localStorage.setItem(TOKEN_AZURE, azureToken);
+    if (
+      provider === "azure" &&
+      localStorage.getItem(REGION_AZURE) !== azureRegion
+    )
+      localStorage.setItem(REGION_AZURE, azureRegion);
 
 
     const translations: string[] | null | undefined =
