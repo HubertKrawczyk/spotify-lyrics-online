@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { getTrackLocalstorageId, Translation } from "./model";
 import { LyricsProps } from "../Lyrics/model";
 import { getDeeplTranslations } from "@/api_internal/DeeplTranslate";
@@ -30,13 +29,10 @@ export default function TranslateMenu({
   const [translation, setTranslationInternal] = useState<Translation | undefined>(undefined);
 
   useEffect(() => {
-    const key = getTrackLocalstorageId(track);
-    if (localStorage.getItem(key) !== null) {
-      const localValue = localStorage.getItem(key);
-      if (localValue != null) {
-        setTranslation(JSON.parse(localValue));
-        setTranslationInternal(JSON.parse(localValue));
-      } 
+    const savedTranslation = getSavedTranslation(track);
+    if (savedTranslation !== null) {
+        setTranslation(savedTranslation);
+        setTranslationInternal(savedTranslation);
     }else {
         setTranslation(undefined);
         setTranslationInternal(undefined);
@@ -69,7 +65,6 @@ export default function TranslateMenu({
     )
       localStorage.setItem("Token-azure", azureToken);
 
-    const key = getTrackLocalstorageId(track);
 
     const translations: string[] | null | undefined =
       provider === "deepl"
@@ -95,8 +90,20 @@ export default function TranslateMenu({
     }
     setTranslationInternal(translation);
     setTranslation(translation);
-    localStorage.setItem(key, JSON.stringify(translation));
+    setShowTranslation(true);
+    updateSavedTranslation(translation, track);
   };
+
+  const updateSavedTranslation = (translation: Translation, track: LyricsProps) => {
+    const key = getTrackLocalstorageId(track);
+    localStorage.setItem(key, JSON.stringify(translation));
+  }
+
+  const getSavedTranslation = (track: LyricsProps): Translation | null => {
+    const key = getTrackLocalstorageId(track);
+    const s = localStorage.getItem(key);
+    return s ? JSON.parse(s) : null;
+  }
 
   function clearTranslationsStorage() {
     for (let i = localStorage.length - 1; i >= 0; i--) {
@@ -111,9 +118,10 @@ export default function TranslateMenu({
       const translation: Translation = {
         translations: userTranslation.split("\n"),
       };
+      setTranslationInternal(translation);
       setTranslation(translation);
-      const key = getTrackLocalstorageId(track);
-      localStorage.setItem(key, JSON.stringify(translation));
+      setShowTranslation(true);
+      updateSavedTranslation(translation, track);
     }
   };
 
