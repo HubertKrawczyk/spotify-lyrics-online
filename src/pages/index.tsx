@@ -88,7 +88,7 @@ export default function Home() {
       <div className="jumbotron text-center w-full">
         {isLoggedIn && (
           <>
-            <p className="py-1">Logged in as {userProfile?.display_name}</p>
+            <p className="py-1 bg-black">Logged in as {userProfile?.display_name}</p>
             <Player onTrackChanged={setCurrentTrack} />
             {currentTrack && <Lyrics {...currentTrack} />}
           </>

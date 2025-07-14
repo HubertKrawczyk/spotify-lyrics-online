@@ -100,6 +100,8 @@ export default function TranslateMenu({
     setTranslation(translation);
     setShowTranslation(true);
     updateSavedTranslation(translation, track);
+    setAzureOptionsOpen(false);
+    setDeeplOptionsOpen(false);
   };
 
   const updateSavedTranslation = (translation: Translation, track: LyricsProps) => {
@@ -130,6 +132,7 @@ export default function TranslateMenu({
       setTranslation(translation);
       setShowTranslation(true);
       updateSavedTranslation(translation, track);
+      setKeyboardTranslationInputOpen(false);
     }
   };
 
@@ -152,7 +155,7 @@ export default function TranslateMenu({
         DeepL
       </button>
       {deeplOptionsOpen && (
-        <div>
+        <div className="flex flex-col items-end w-fit mx-auto gap-1">
           <label>
             DeepL token
             <input
@@ -210,7 +213,7 @@ export default function TranslateMenu({
         Microsoft Translator
       </button>
       {azureOptionsOpen && (
-        <div>
+        <div className="flex flex-col items-end w-fit mx-auto gap-1">
           <label>
             Azure Translator token
             <input
@@ -310,9 +313,9 @@ export default function TranslateMenu({
             setShowTranslationInternal(e.target.checked);
           }}
         />
-        Show translation
+        Show translation{ !!translation &&("🔤✅")}
       </label>
-      { !!translation &&("🔤✅")}
+      
     </div>
   );
 }

@@ -7,6 +7,8 @@ import style from "./style.module.css";
 import { geniusGetLyricsForTrack } from "./LyricsExtractMethods";
 import TranslateMenu from "../TranslateMenu";
 import { Translation } from "../TranslateMenu/model";
+import { defaultTextFormatSettings, TextFormatSettings } from "../TextFormatSettingsMenu/model";
+import TextFormatSettingsMenu from "../TextFormatSettingsMenu";
 
 export default function Lyrics(track: LyricsProps) {
   const geniusAuthService = useAuthService("genius");
@@ -18,6 +20,8 @@ export default function Lyrics(track: LyricsProps) {
 
   const [newText, setNewText] = useState<string | undefined>(undefined);
   const [currentText, setCurrentText] = useState<string | undefined>(undefined);
+
+  const [textFormatSettings, setTextFormatSettings] = useState<TextFormatSettings>(defaultTextFormatSettings)
 
   useEffect(() => {
     const isLoggedIn = geniusAuthService.isLoggedIn();
@@ -56,9 +60,15 @@ export default function Lyrics(track: LyricsProps) {
     setIsLoading(false);
   };
 
+  const updateTextFormatSettings = (s: TextFormatSettings) => {
+    setTextFormatSettings(s);
+    localStorage.setItem("FormatSettings", JSON.stringify(s));
+  }
+
   return (
-    <div className="overflow-x-auto relative">
-      <div className="absolute right-0 z-10 overflow-hidden">
+    <div className={`relative mx-auto ${textFormatSettings.invertColors ? 'bg-white/60' : 'bg-black/60'}`}>
+      <div>
+        <TextFormatSettingsMenu setTextFormatSettings={setTextFormatSettings} translationDisplayed={showTranslation}  />
         <TranslateMenu track={track} currentText={currentText} setTranslation={setTranslation} setShowTranslation={setShowTranslation}/>
       </div>
       {!isLoggedIn && (
@@ -68,50 +78,56 @@ export default function Lyrics(track: LyricsProps) {
           </div>
         </Link>
       )}
-      {(!!newText || !!currentText) && (
-        <div className="flex justify-center text-base md:text-md lg:text-lg">
-          
-          <div
-            className={`flex justify-center overflow-hidden relative shrink-0 ${style.textContainer}`}
-          >
-            <p
-              className="whitespace-pre bg-black w-full md:w-fit px-2 md:px-6 xl:px-20"
-              style={{ visibility: firstLoaded ? "visible" : "hidden" }}
-            >
-              {currentText}
-            </p>
-            {!!newText && (
-              <>
-                <p className="whitespace-pre bg-black w-full md:w-fit px-2 md:px-6 xl:px-20">
-                  {newText}
+      <div className="w-100"> 
+        {(!!newText || !!currentText) && (
+          <div className={`w-fit mx-auto`} style={{fontSize: textFormatSettings.fontSizeInRem+"rem"}}>
+            <div className={`flex relative shrink-0 overflow-y-hidden ${textFormatSettings.invertColors ? "bg-white text-black" : "bg-black text-white"} `}>
+              <div
+                className={`bg-inherit ${style.textContainer}`}
+                style={{textAlign: textFormatSettings.textAlignText}}
+              >
+                <p
+                  className="whitespace-pre px-2 md:px-6 xl:px-20"
+                  style={{ visibility: firstLoaded ? "visible" : "hidden" }}
+                >
+                  {currentText}
                 </p>
-                <p className="whitespace-pre bg-black w-full md:w-fit px-2 md:px-6 xl:px-20">
-                  {newText}
-                </p>
-                <p className="whitespace-pre bg-black w-full md:w-fit px-2 md:px-6 xl:px-20">
-                  {newText}
-                </p>
-                <p className="whitespace-pre bg-black w-full md:w-fit px-2 md:px-6 xl:px-20">
-                  {newText}
-                </p>
-                <p className="whitespace-pre bg-black w-full md:w-fit px-2 md:px-6 xl:px-20">
-                  {newText}
-                </p>
-              </>
-            )}
-          </div>
-          <div className="min-w-0 shrink-1">
-            {showTranslation && !!translation && (
-          <p className="whitespace-pre bg-black w-full md:w-fit px-2 md:px-6 xl:px-20">{translation.translations.join("\n")}</p>
-      )}
+                {!!newText && (
+                  <>
+                    <p className="whitespace-pre bg-inherit px-2 md:px-6 xl:px-20">
+                      {newText}
+                    </p>
+                    <p className="whitespace-pre bg-inherit px-2 md:px-6 xl:px-20">
+                      {newText}
+                    </p>
+                    <p className="whitespace-pre bg-inherit px-2 md:px-6 xl:px-20">
+                      {newText}
+                    </p>
+                    <p className="whitespace-pre bg-inherit px-2 md:px-6 xl:px-20">
+                      {newText}
+                    </p>
+                    <p className="whitespace-pre bg-inherit px-2 md:px-6 xl:px-20">
+                      {newText}
+                    </p>
+                  </>
+                )}
+              </div>
+              {showTranslation && !!translation && (
+                <div className="min-w-0 shrink-1" 
+                  style={{textAlign: textFormatSettings.textAlignTranslation}}
+                >
+                  <p className="whitespace-pre w-full md:w-fit pr-2 md:pr-6 xl:pr-20">{translation.translations.join("\n")}</p>
+                </div>
+              )}
             </div>
-        </div>
-      )}
-      {isLoading && (
-        <div
-          className={`absolute top-0 h-3 left-0s w-full ${style.loadingBg}`}
-        />
-      )}
+          </div>
+        )}
+        {isLoading && (
+          <div
+            className={`absolute top-0 h-3 left-0s w-full ${style.loadingBg}`}
+          />
+        )}
+      </div>
     </div>
   );
 }

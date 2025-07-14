@@ -13,10 +13,6 @@ html, body, #__next {
   min-height: 100vh;
 }
 
-main{
-  background-color: rgba(0,0,0, 0.6);
-
-}
 main, nav {
   width: 100%;
   max-width: 1536px;
