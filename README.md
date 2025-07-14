@@ -1,6 +1,6 @@
-<img width="1286" height="607" alt="obraz" src="https://github.com/user-attachments/assets/3757dca1-f18e-4b65-a682-da0b8cadb8c3" />
+<img width="760" height="677" alt="obraz" src="https://github.com/user-attachments/assets/f299f929-2f43-4312-b8fa-43207b7108c8" />
+<img width="1515" height="399" alt="obraz" src="https://github.com/user-attachments/assets/2f01b8a0-6c29-48af-9f40-d1befa6f8254" />
 
-<img width="1341" height="270" alt="obraz" src="https://github.com/user-attachments/assets/cb8d33ff-a6fc-412d-b559-6d1a4cdae2cc" />
 
 
 Available at: https://spotify-lyrics-online.vercel.app/
