@@ -9,7 +9,7 @@ const prepareTrackName2 = (trackName: string) => {
   let newT = trackName;
   newT = newT.split('-')[0];
   newT = newT.split('(')[0];
-  return newT
+  return newT 
 };
 export async function geniusGetLyricsForTrack(track: LyricsProps) {
   let search = await geniusApi.search({
