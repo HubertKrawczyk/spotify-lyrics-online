@@ -14,3 +14,7 @@ const config = {
 };
 
 export const client = new AuthorizationCode(config);
+
+export default function handler(_req: any, _res: any) {
+  return new Response("don't", { status: 404 });
+}
