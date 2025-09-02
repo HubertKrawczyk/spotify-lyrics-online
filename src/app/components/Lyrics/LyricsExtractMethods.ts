@@ -2,28 +2,19 @@ import { LyricsProps } from "./model";
 import axios from "axios";
 import geniusApi from "@/api_external/genius/api";
 
+
 const prepareTrackName = (trackName: string) => {
-  return trackName.replaceAll("- edit", "");
-};
-const prepareTrackName2 = (trackName: string) => {
   let newT = trackName;
   newT = newT.split('-')[0];
   newT = newT.split('(')[0];
   return newT 
 };
+
 export async function geniusGetLyricsForTrack(track: LyricsProps) {
-  let search = await geniusApi.search({
+  const search = await geniusApi.search({
     ...track,
     trackName: prepareTrackName(track.trackName),
   });
- 
-
-  if (search.response.hits.length == 0) {
-    search = await geniusApi.search({
-    ...track,
-    trackName: prepareTrackName2(track.trackName),
-    });
-  }
 
   const geniusSongId = search.response.hits.find((h) => h.type == "song")
     ?.result.id;
