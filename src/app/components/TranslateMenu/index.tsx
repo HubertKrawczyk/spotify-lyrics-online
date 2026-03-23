@@ -76,9 +76,9 @@ export default function TranslateMenu({
 
     const translations: string[] | null | undefined =
       provider === "deepl"
-        ? await getDeeplTranslations(currentText, "EN", deeplToken, deeplFreePlan)
+        ? await getDeeplTranslations(currentText, targetLanguage.toUpperCase(), deeplToken, deeplFreePlan)
         : provider === "azure"
-        ? await getAzureTranslations(currentText, "EN", azureToken, azureRegion) 
+        ? await getAzureTranslations(currentText, targetLanguage.toUpperCase(), azureToken, azureRegion) 
         : null;
 
     if (!translations) return;
